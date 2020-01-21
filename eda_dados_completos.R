@@ -18,7 +18,8 @@ df_regioes <- df_iniciais %>%
             perc_desp_educ_pib = (sum(despesas_educacao) / 1e+3) / sum(pib),
             despesas_educacao_pc = sum(despesas_educacao) / sum(pop_ibge),
             ird = mean(nota_ird),
-            doc_sup = mean(doc_sup))
+            doc_sup = mean(doc_sup),
+            pib_pc = sum(pib) / sum(pop_ibge))
 
 media_ideb <- weighted.mean(df_iniciais$ideb, w = df_iniciais$pop_ibge)
 dotplot_regions(df_regioes, var_plot = ideb, palette = 'steelblue', vline = media_ideb)
@@ -51,6 +52,7 @@ ggplot(df_regioes,
        title = 'Relação entre formação dos docentes e desempenho dos alunos',
        subtitle = 'Regiões de Governo de São Paulo',
        caption = 'Fonte: Elaboração própria a partir de dados do INEP e do QEdu.')
+
 ggsave("dsu_vs_desempenho_adequado.png", height = 6, width = 6)
 
 ggplot(df_regioes,
