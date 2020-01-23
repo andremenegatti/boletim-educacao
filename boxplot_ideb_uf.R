@@ -1,6 +1,6 @@
 library(tidyverse)
 
-ideb_iniciais <- readxl::read_excel("~/backup_windows/Desktop/USP_Municipios/Dados/IDEB/divulgacao_anos_iniciais_municipios2017-atualizado-Jun_2019.xlsx",
+ideb_iniciais <- readxl::read_excel("data/divulgacao_anos_iniciais_municipios2017-atualizado-Jun_2019.xlsx",
                                     sheet = 1, range = 'A8:CK14444', col_names = TRUE) %>% 
   select(uf = SG_UF, Codmun7 = COD_MUN, rede = REDE,
          taxa_aprov_iniciais_2005 = TAP05_F14,
@@ -48,13 +48,14 @@ iniciais_brasil <- ideb_iniciais %>%
 
 iniciais_brasil %>% 
   ggplot(aes(x = uf, y = ideb_iniciais_2017, fill = regiao)) +
-  geom_boxplot() + 
+  geom_boxplot(outlier.shape = 1, outlier.alpha = 0.1) + 
   cagedExplorer::custom_theme() + 
   labs(x = 'Unidade Federativa',
        y = 'Nota IDEB 2017 - Anos Iniciais',
        title = 'Desempenho das unidades federativas no IDEB 2017 - Anos Iniciais',
        subtitle = 'Comparação de distribuições de médias municipais') +
-  scale_fill_brewer(palette = 'Spectral', name = 'Região') +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+  scale_fill_brewer(palette = 'Accent', name = 'Região') +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1),
+        panel.grid = element_blank())
 
-ggsave('boxplot_ideb_iniciais_uf.png', width = 7, height = 5)
+# ggsave('plots/boxplot_ideb_iniciais_uf.png', width = 8, height = 6)

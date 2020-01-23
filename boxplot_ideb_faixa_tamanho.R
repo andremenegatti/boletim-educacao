@@ -1,27 +1,20 @@
 library(cagedExplorer)
-source("dotplot_regions.R")
 
 df_iniciais <- readRDS('data/df_dados_completos_anos_iniciais.rds')
 
-glimpse(df_iniciais)
-
 df_iniciais %>% 
-  group_by(faixa_tamanho) %>% 
-  summarise(n = n(),
-            media_ideb = mean(ideb),
-            std = sd(ideb))
-
-
-df_iniciais %>% 
-  ggplot(aes(x = faixa_tamanho, y = ideb, fill = faixa_tamanho)) +
-  geom_boxplot() +
+  ggplot(aes(x = faixa_tamanho2, y = ideb, 
+             fill = faixa_tamanho2)) +
+  geom_boxplot(alpha = 0.7, outlier.shape = 1) +
   custom_theme() +
   coord_flip() +
-  scale_fill_brewer(palette = 'Spectral') +
-  labs(y = 'Média IDEB',
-       x = 'Números de habitantes',
-       title = 'Desempenho dos municípios paulistas no IDEB, por faixas de tamanho',
-       subtitle = 'Média IDEB 2017 - Anos Iniciais do Ensino Fundamental') +
-  theme(legend.position = 'none')
+  scale_fill_manual(values = rev(RColorBrewer::brewer.pal(8, 'Dark2'))) +
+  labs(y = 'Nota IDEB',
+       x = 'Faixa populacional',
+       title = 'Desempenho dos municípios paulistas no IDEB, por faixa populacional',
+       subtitle = 'Média IDEB 2017 - Anos Iniciais do Ensino Fundamental',
+       caption = 'Fonte: Elaboração própria a partir de dados do INEP e do IBGE.') +
+  theme(legend.position = 'none',
+        panel.grid = element_blank())
 
-ggsave('boxplot_ideb_anos_iniciais_faixa_tamanho.png', height = 7, width = 7)
+# ggsave('plots/boxplot_ideb_anos_iniciais_faixa_tamanho.png', height = 7, width = 7)
