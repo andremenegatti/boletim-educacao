@@ -42,18 +42,20 @@ iniciais_brasil <- ideb_iniciais %>%
                             uf %in% c('SP', 'MG', 'ES', 'RJ') ~ 'Sudeste',
                             uf %in% c('AM', 'RO', 'PA', 'AC', 'RR', 'TO', 'AP') ~ 'Norte',
                             TRUE ~ 'Nordeste')) %>% 
-  mutate(uf = fct_reorder(uf, ideb_iniciais_2017, function(x) median(x, na.rm = TRUE)))
+  mutate(uf = fct_reorder(uf, ideb_iniciais_2017, function(x) median(x, na.rm = TRUE))) %>% 
+  filter(rede == "Pública")
 
 
 
 iniciais_brasil %>% 
   ggplot(aes(x = uf, y = ideb_iniciais_2017, fill = regiao)) +
-  geom_boxplot(outlier.shape = 1, outlier.alpha = 0.1) + 
+  geom_boxplot(outlier.shape = 1, outlier.alpha = 0.2) + 
   cagedExplorer::custom_theme() + 
   labs(x = 'Unidade Federativa',
        y = 'Nota IDEB 2017 - Anos Iniciais',
        title = 'Desempenho das unidades federativas no IDEB 2017 - Anos Iniciais',
-       subtitle = 'Comparação de distribuições de médias municipais') +
+       subtitle = 'Comparação de distribuições de médias municipais',
+       caption = 'Fonte: Elaboração própria a partir de dados do INEP.') +
   scale_fill_brewer(palette = 'Accent', name = 'Região') +
   theme(axis.text.x = element_text(angle = 45, hjust = 1),
         panel.grid = element_blank())

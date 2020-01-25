@@ -34,7 +34,7 @@ df_iniciais %>%
   scale_x_log10(breaks = c(0.2, 0.3, 0.4), labels = c('20%', '30%', '40%')) +
   labs(x = 'Despesas com educação como percentual do total (escala logarítmica)',
        y = 'Média IDEB 2017 - Anos Iniciais',
-       title = 'Relação entre PIB per capita e desempenho educacional',
+       title = 'Relação entre despesas e desempenho educacional, por faixa populacional',
        subtitle = 'Resultados dos municípios paulistas no IDEB 2017 - Anos Iniciais',
        caption = 'Fonte: Elaboração própria a partir de dados do INEP, IBGE e Finbra.\nNota: A área dos pontos é proporcional à população dos municípios.') +
   # scale_color_brewer(name = 'Faixa de população', palette = 'Spectral') +

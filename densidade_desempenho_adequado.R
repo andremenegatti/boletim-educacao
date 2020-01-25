@@ -1,5 +1,4 @@
 library(cagedExplorer)
-source("dotplot_regions.R")
 
 df_iniciais <- readRDS('data/df_dados_completos_anos_iniciais.rds')
 
@@ -14,35 +13,14 @@ df_iniciais %>%
   geom_density(aes(x = perc_adequado, fill = disciplina),
                  alpha = 0.5, position = 'identity') +
   custom_theme() +
-  # theme(legend.position = 'bottom') +
-  scale_fill_manual(values = c('deepskyblue', 'firebrick'), name = 'Prova') +
+  theme(panel.grid = element_blank()) +
+  scale_fill_brewer(name = 'Prova', palette = 'Dark2') +
   scale_y_continuous(labels = function(x) formatC(x, digits = 3, big.mark = '.', decimal.mark = ',')) +
   scale_x_continuous(labels = function(x) paste0(x, '%')) +
   labs(x = 'Percentual de Alunos com Desempenho Adequado',
        y = 'Densidade',
-       title = 'Percentual de Alunos com Desempenho Adequado no SAEB',
-       subtitle = 'Distribuição dos resultados dos municípios paulistas no SAEB 2017 - Anos Iniciais')
+       title = 'Percentual de Alunos da Rede Pública com Desempenho Adequado no SAEB',
+       subtitle = 'Distribuição dos resultados dos municípios paulistas no SAEB 2017 - Anos Iniciais',
+       caption = 'Fonte: Elaboração própria a partir de dados do QEdu.')
   
-ggsave('densidade_alunos_desempenho_adequado.png', height = 6, width = 7)
-
-
-
-
-df_iniciais %>% 
-  ggplot() +
-  geom_density(aes(x = ideb),
-               alpha = 0.5, position = 'identity') +
-  custom_theme() +
-  # theme(legend.position = 'bottom') +
-  scale_fill_manual(values = c('deepskyblue', 'firebrick'), name = 'Prova') +
-  scale_y_continuous(labels = function(x) formatC(x, digits = 3, big.mark = '.', decimal.mark = ',')) +
-  scale_x_continuous(labels = function(x) paste0(x, '%')) +
-  labs(x = 'Percentual de Alunos com Desempenho Adequado',
-       y = 'Densidade',
-       title = 'Percentual de Alunos com Desempenho Adequado no SAEB',
-       subtitle = 'Distribuição dos resultados dos municípios paulistas no SAEB 2017 - Anos Iniciais')
-
-
-library(RColorBrewer)
-display.brewer.pal(n = 9, name = 'RdBu')
-brewer.pal(n = 9, name = 'RdBu')
+ggsave('plots/densidade_alunos_desempenho_adequado.png', height = 6, width = 7)
