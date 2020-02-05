@@ -1,6 +1,7 @@
 data/Sinopse_Estat*
 data/dados_finbra.xlsx
 private/*
+plots/interactive/
 
 # History files
 .Rhistory
