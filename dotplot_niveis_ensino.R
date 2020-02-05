@@ -117,8 +117,9 @@ dotplot_niveis <- ggplot(df_reg) +
                  shape = nivel, col = nivel), size = 3) +
   scale_color_brewer(palette = 'Accent', name = 'Nível de Ensino') +
   scale_shape_discrete(name = 'Nível de Ensino') +
-  custom_theme() +
-  theme(panel.grid.major.x = element_blank()) +
+  cagedExplorer::custom_theme() +
+  theme(panel.grid.major.x = element_blank(),
+        panel.grid.major.y = element_line(linetype = 'dotted')) +
   labs(
     x = 'Média IDEB',
     y = 'Região de Governo',

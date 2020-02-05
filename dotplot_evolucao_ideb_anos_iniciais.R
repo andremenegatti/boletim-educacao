@@ -78,10 +78,11 @@ dotplot_evolucao_bruta <-
                 label = formatC(ideb_pond, 3, big.mark = '.', decimal.mark = ','),
                 hjust = ifelse(ano == '2007', 1.4, -0.4)),
             size = 3, family = 'Serif', color = 'gray25') +
-  custom_theme() +
+  cagedExplorer::custom_theme() +
   scale_x_continuous(limits = c(4.3, 7.4)) +
   theme(panel.grid.major.x = element_blank(),
-        axis.text.x = element_blank()) +
+        axis.text.x = element_blank(),
+        panel.grid.major.y = element_line(linetype = 'dotted')) +
   labs(
     x = 'Média IDEB',
      y = 'Região de Governo',
