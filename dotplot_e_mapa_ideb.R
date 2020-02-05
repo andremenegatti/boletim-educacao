@@ -25,7 +25,7 @@ matriculas_iniciais <- readRDS('data/matriculas_iniciais_long.rds') %>%
 df_municipios <- readRDS('data/municipios_sp.rds')
 
 # Juntando dados --------------------------------------------------------------
-# Municipios SP (do pacote cagedExplorer)
+# Municipios SP
 df_iniciais <- df_municipios %>%  
   inner_join(pop2017, by = 'Codmun7') %>% 
   inner_join(ideb_iniciais, by = 'Codmun7') %>% 
@@ -86,9 +86,12 @@ dotplot1 <- df_medias %>%
        iii) A linha vertical indica a média (ponderada) dos municípios paulistas')
 
 # Grafico interativo para inspecao
-# plotly::ggplotly(dotplot1)
+# dotplotly <- plotly::ggplotly(dotplot1)
+# htmlwidgets::saveWidget(dotplotly, 'dotplot_ideb_2017.html')
 
-ggsave(plot = dotplot1, filename = 'plots/dotplot_ideb2017_anos_iniciais_ponderada_matriculas_rede_publica.png', height = 8, width = 6.5)
+# ggsave(plot = dotplot1,
+#        filename = 'plots/dotplot_ideb2017_anos_iniciais_ponderada_matriculas_rede_publica.png',
+#        height = 8, width = 6.5)
 
 # MAPA ------------------------------------------------------------------------
 map_title <-  'Regiões de Governo de São Paulo - IDEB 2017 Anos Iniciais - Rede Pública'
@@ -126,4 +129,5 @@ mapa_ideb <- df_medias %>%
   tmap::tm_legend(legend.position = c(0.01, 0.08)) +
   tmap::tm_borders(col = "black", lwd = 0.3)
 
-tmap::tmap_save(mapa_ideb, filename = 'plots/mapa_ideb2017_anos_iniciais_ponderada_matriculas_rede_publica.png', width = 7, height = 5.5)
+# tmap::tmap_save(mapa_ideb, filename = 'plots/mapa_ideb2017_anos_iniciais_ponderada_matriculas_rede_publica.png', width = 7, height = 5.5)
+# tmap::tmap_save(mapa_ideb, filename = 'mapa_ideb_2017.html')

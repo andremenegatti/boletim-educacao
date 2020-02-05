@@ -12,7 +12,8 @@ df_iniciais %>%
   ggplot(aes(x = pib / pop_ibge,
            y = perc_adequado)) +
   geom_point(aes(size = pop_ibge), shape = 1, alpha = 0.2) +
-  geom_smooth(se = FALSE, col = 'darkred', method = 'loess', alpha = 0.7) +
+  geom_smooth(se = TRUE, col = 'darkred', fill = 'lightgray',
+              method = 'loess', alpha = 0.7) +
   facet_wrap(~ Disciplina) +
   scale_x_log10() +
   scale_y_continuous(breaks = seq(0, 100, by = 10)) +
@@ -26,23 +27,27 @@ df_iniciais %>%
   custom_theme() +
   theme(panel.grid = element_blank())
 
-# ggsave('scatterplot_desempenho_adequado_vs_pib_per_capita.png', height = 6, width = 6.5)
+# ggsave('plots/desempenho_adequado/scatterplot_desempenho_adequado_vs_pib_per_capita.png', height = 6, width = 6.5)
 
 # SCATTERPLOT: % SAEB VS PIB PER CAPITA ---------------------------------------
 df_iniciais %>% 
   ggplot(aes(x = pib / pop_ibge,
              y = saeb)) +
-  geom_point(aes(size = pop_ibge), shape = 1, alpha = 0.2) +
-  geom_smooth(se = FALSE, col = 'darkred', method = 'loess', alpha = 0.7) +
+  geom_point(aes(size = pop_ibge), shape = 1, alpha = 0.3) +
+  geom_smooth(se = TRUE, col = 'darkred', fill = 'lightgray',
+              method = 'lm', alpha = 0.7) +
   scale_x_log10() +
   labs(x = 'PIB per capita em milhares de reais (escala logarítmica)',
        y = 'Média SAEB 2017 - Anos Iniciais',
        title = 'Relação entre PIB per capita e desempenho educacional',
        subtitle = 'Resultados dos municípios paulistas no SAEB 2017 - Anos Iniciais',
-       caption = 'Fonte: Elaboração própria a partir de dados do INEP e do IBGE.\nNota: A área dos pontos é proporcional à população dos municípios.') +
+       caption = 'Notas:
+       i) Elaboração própria a partir de dados do INEP e do IBGE;
+       ii) A área dos pontos é proporcional à população dos municípios;
+       iii) A área sombreada corresponde ao intervalo de confiança de 95%.') +
   scale_color_manual(name = 'Faixa de população', values = RColorBrewer::brewer.pal(8, 'Dark2')) +
   guides(size = FALSE) +
   custom_theme() +
   theme(panel.grid = element_blank())
 
-# ggsave('scatterplot_saeb_vs_pib_per_capita.png', height = 6, width = 5.5)
+# ggsave('plots/scatterplot_saeb_vs_pib_per_capita.png', height = 6, width = 5.5)

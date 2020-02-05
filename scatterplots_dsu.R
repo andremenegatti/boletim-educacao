@@ -11,7 +11,40 @@ df_iniciais %>%
   mutate(Disciplina = ifelse(Disciplina == 'mat', 'Matemática', 'Português')) %>% 
   ggplot(aes(x = doc_sup, y = perc_adequado)) +
   geom_point(alpha = 0.13, shape = 1) +
-  geom_smooth(method = 'lm', col = 'darkred', se = FALSE, alpha = 0.5) +
+  geom_smooth(method = 'lm', col = 'darkred', fill = 'lightgray',
+              se = TRUE, alpha = 0.8) +
+  custom_theme() +
+  scale_x_continuous(labels = function(x) paste0(x, '%'), breaks = seq()) +
+  scale_y_continuous(labels = function(x) paste0(x, '%')) +
+  labs(
+    x = 'Percentual de docentes com curso superior',
+    y = 'Percentual de alunos com desempenho adequado',
+    title = 'Relação entre formação dos docentes e desempenho educacional',
+    subtitle = 
+      'Resultados dos municípios paulistas no SAEB 2017 - Anos Iniciais',
+    caption = 
+      'Fonte: Elaboração própria a partir de dados do INEP e do QEdu.\nNota: As áreas sombreadas correspondem ao intervalo de confiança de 95%.'
+    ) +
+  theme(panel.grid = element_blank()) +
+  facet_wrap(~ Disciplina)
+
+# ggsave('plots/desempenho_adequado/scatterplot_desempenho_adequado_vs_dsu.png',
+#        height = 6, width = 6)
+
+# SCATTERPLOT: DESEMPENHO ADEQUADO VS DSU -------------------------------------
+# WEIGHT: pop_ibge
+# FACETED: ~ DISCIPLINA
+df_iniciais %>% 
+  pivot_longer(cols = c(perc_adequado_mat, perc_adequado_port),
+               names_to = 'Disciplina', names_prefix = 'perc_adequado_',
+               values_to = 'perc_adequado') %>% 
+  mutate(Disciplina = ifelse(Disciplina == 'mat',
+                             'Matemática', 'Português')) %>% 
+  ggplot(aes(x = doc_sup, y = perc_adequado)) +
+  geom_point(aes(size = pop_ibge), alpha = 0.2, shape = 1) +
+  geom_smooth(aes(weight = pop_ibge), method = 'lm',
+              col = 'darkred', fill = 'lightgray',
+              se = TRUE, alpha = 0.8) +
   custom_theme() +
   scale_x_continuous(labels = function(x) paste0(x, '%'), breaks = seq()) +
   scale_y_continuous(labels = function(x) paste0(x, '%')) +
@@ -19,16 +52,21 @@ df_iniciais %>%
        y = 'Percentual de alunos com desempenho adequado',
        title = 'Relação entre formação dos docentes e desempenho educacional',
        subtitle = 'Resultados dos municípios paulistas no SAEB 2017 - Anos Iniciais',
-       caption = 'Fonte: Elaboração própria a partir de dados do INEP e do QEdu.') +
+       caption = 'Notas:
+       i) Elaboração própria a partir de dados do INEP e do QEdu;
+       ii) Regressão linear ponderada pela população de cada município;
+       iii) As áreas sombreadas correspondem ao intervalo de confiança de 95%.') +
   theme(panel.grid = element_blank()) +
   facet_wrap(~ Disciplina)
 
-# ggsave('plots/desempenho_adequado_vs_dsu.png', height = 6, width = 6)
-
+# ggsave('plots/desempenho_adequado/scatterplot_desempenho_adequado_vs_dsu_weighted.png',
+#        height = 6, width = 6)
 
 # VIOLIN PLOT: DSU VS FAIXA POP -----------------------------------------------
 df_iniciais %>% 
-  mutate(faixa_tamanho2 = fct_reorder(faixa_tamanho2, pop_ibge, .fun = function(x) mean(x, na.rm = TRUE))) %>% 
+  mutate(faixa_tamanho2 = 
+           fct_reorder(faixa_tamanho2, pop_ibge,
+                       .fun = function(x) mean(x, na.rm = TRUE))) %>% 
   ggplot(aes(x = faixa_tamanho2, y = doc_sup)) +
   geom_violin(aes(fill = faixa_tamanho2), alpha = 0.5)  +
   custom_theme() +
@@ -38,7 +76,6 @@ df_iniciais %>%
   labs(x = 'Faixa populacional',
        y = 'Percentual de docentes com curso superior') +
   guides(fill = FALSE)
-
 
 # AGREGANDO POR REGIOES -------------------------------------------------------
 # Media simples
@@ -79,8 +116,9 @@ df_regioes_pond %>%
                values_to = 'perc_adequado') %>% 
   mutate(Disciplina = ifelse(Disciplina == 'mat', 'Matemática', 'Português')) %>% 
   ggplot(aes(x = doc_sup, y = perc_adequado)) +
-  geom_point(aes(size = pop_ibge), alpha = 0.4, shape = 1) +
-  geom_smooth(method = 'loess', col = 'darkred', se = FALSE, alpha = 0.7) +
+  geom_point(aes(size = pop_ibge), alpha = 0.7, shape = 1) +
+  geom_smooth(method = 'loess', col = 'darkred', fill = 'lightgray',
+              se = TRUE, alpha = 0.6) +
   custom_theme() +
   scale_x_continuous(labels = function(x) paste0(x, '%')) +
   scale_y_continuous(labels = function(x) paste0(x, '%')) +
@@ -94,27 +132,36 @@ df_regioes_pond %>%
   theme(panel.grid = element_blank()) +
   facet_grid(~ Disciplina)
 
-# ggsave('plots/scatterplot_desempenho_adequado_vs_dsu_regioes.png', height = 6, width = 6)
-
+# ggsave('plots/desempenho_adequado/scatterplot_desempenho_adequado_vs_dsu_regioes.png',
+#        height = 6, width = 6)
 
 # SCATTERPLOT: IDEB VS DSU ----------------------------------------------------
 # SMOOTH: loess
 df_regioes_pond %>% 
   ggplot(aes(x = doc_sup, y = ideb)) +
   geom_point(aes(size = pop_ibge),
-             alpha = 0.4, shape = 1) +
-  geom_smooth(method = 'loess', col = 'darkred',
-              se = FALSE, alpha = 0.6) +
+             alpha = 0.7, shape = 1) +
+  geom_smooth(method = 'lm', col = 'darkred',
+              fill = 'lightgray', se = TRUE, alpha = 0.5) +
   custom_theme() +
   scale_x_continuous(labels = function(x) paste0(x, '%')) +
-  scale_y_continuous(labels = function(x) formatC(x, big.mark = '.', decimal.mark = ',')) +
-  scale_size_continuous(name = 'Habitantes', breaks = c(1e+6, 5e+6, 1e+7, 2e+7),
+  scale_y_continuous(labels = 
+                       function(x) formatC(x, big.mark = '.',
+                                           decimal.mark = ',')) +
+  scale_size_continuous(name = 'Habitantes',
+                        breaks = c(1e+6, 5e+6, 1e+7, 2e+7),
                         labels = c('1 milhão', '5 milhões', '10 milhões', '20 milhões')) +
-  labs(x = 'Percentual de docentes com curso superior',
-       y = 'Nota IDEB 2017 - Anos Iniciais',
-       title = 'Relação entre formação dos docentes e desempenho educacional',
-       subtitle = 'Médias das Regiões de Governo de São Paulo, IDEB 2017 - Anos Iniciais',
-       caption = 'Fonte: Elaboração própria a partir de dados do INEP e do IBGE.\nNota: Médias ponderadas pela população dos municípios.') +
+  labs(
+    x = 'Percentual de docentes com curso superior',
+    y = 'Nota IDEB 2017 - Anos Iniciais',
+    title = 'Relação entre formação dos docentes e desempenho educacional',
+    subtitle = 
+      'Médias das Regiões de Gov. de SP, IDEB 2017 Anos Iniciais',
+    caption = 'Notas:
+    i) Elaboração própria a partir de dados do INEP e do IBGE;
+    ii) Médias ponderadas pela população dos municípios;
+    iii) A área sombreada corresponde ao intervalo de confiança de 95%.') +
   theme(panel.grid = element_blank())
 
-# ggsave("plots/scatterplot_ideb_vs_dsu_regioes.png", height = 6, width = 6)
+# ggsave("plots/scatterplot_ideb_vs_dsu_regioes.png",
+#        height = 6, width = 6)

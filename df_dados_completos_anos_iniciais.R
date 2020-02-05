@@ -63,7 +63,7 @@ df_iniciais <- municipios_sp %>%
             by = 'Codmun7') %>% 
   left_join(matriculas_iniciais %>% 
               filter(rede == 'publica') %>% 
-              select(Codmun7, matriculas),
+              select(Codmun7, matriculas, municipalizacao),
             by = 'Codmun7') %>% 
   left_join(pop_ibge_2017, by = 'Codmun7') %>% 
   left_join(despesas_educ_2017 %>% select(-municipio),

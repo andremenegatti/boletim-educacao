@@ -5,9 +5,8 @@ df_iniciais <- readRDS('data/df_dados_completos_anos_iniciais.rds')
 # SCATTERPLOT: % GASTOS EDUC VS POPULACAO -------------------------------------
 ggplot(df_iniciais,
        aes(x = pop_ibge/1000, y = perc_despesas_educacao * 100, size = pop_ibge)) +
-  geom_point(aes(col = faixa_tamanho2), alpha = 0.2) +
-  geom_point(aes(col = faixa_tamanho2), shape = 1, alpha = 0.4) +
-  geom_smooth(se = FALSE, col = 'darkred', method = 'loess', alpha = 0.7) +
+  geom_point(shape = 1, alpha = 0.5) +
+  geom_smooth(se = TRUE, fill = 'lightgray', col = 'darkred', method = 'loess', alpha = 0.7) +
   custom_theme() +
   theme(panel.grid = element_blank()) +
   scale_color_manual(name = 'Faixa de população', values = RColorBrewer::brewer.pal(8, 'Dark2')) +
@@ -18,8 +17,11 @@ ggplot(df_iniciais,
   labs(x = 'Milhares de habitantes (escala logarítmica)',
        y = 'Despesas com educação (percentual do total) ',
        title = 'Relação entre gastos com educação e população',
-       subtitle = 'Municípios paulistas, 2017',
-       caption = 'Fonte: Elaboração própria a partir de dados da Finbra e do IBGE.\nNota: A área dos pontos é proporcional à população dos municípios.')
+       subtitle = 'Municípios paulistas, 2017 - Regressão não-paramétrica',
+       caption = 'Notas:
+       i) Elaboração própria a partir de dados da Finbra e do IBGE;
+       ii) A área dos pontos é proporcional à população dos municípios;
+       iii) A área sombreada corresponde ao intervalo de confiança de 95%.')
 
 # ggsave('plots/scatterplot_gastos_educacao_vs_pop.png', height = 6, width = 6)
 
