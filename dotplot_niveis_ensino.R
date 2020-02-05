@@ -1,7 +1,7 @@
 library(tidyverse)
 
-municipios_sp <- readRDS('data/municipios_sp.rds') %>% 
-  select(Codmun7, municipio, municipio_clean, regiao_governo)
+municipios_sp <- readRDS('data/df_dados_completos_anos_iniciais.rds')  %>% 
+  select(Codmun7, municipio, municipio_clean, regiao_governo, pop_ibge)
 
 # Importando dados matrículas -------------------------------------------
 # Consideramos apenas rede pública
@@ -98,7 +98,39 @@ df_mun <- matriculas_long %>%
   left_join(municipios_sp, by = 'Codmun7') %>% 
   select(Codmun7, municipio, regiao_governo, nivel, ideb, matriculas,
          municipalizacao, municipio_clean)
-  
+
+# CHECANDO MISSING DATA NO IDEB ----------------------------------------------
+# Lista com DFs contendo municipios sem dados de IDEB em cada nivel
+na_list <- map2(
+  .x = list(ideb_iniciais, ideb_finais, ideb_medio),
+  .y = c('iniciais', 'finais', 'medio'),
+  .f = ~ municipios_sp %>% 
+    left_join(.x, by = 'Codmun7') %>% 
+    left_join(matriculas_long %>% filter(nivel == .y), by = 'Codmun7') %>% 
+    filter(is.na(ideb)) %>% 
+    select(municipio, regiao_governo, pop_ibge, matriculas)
+) %>% set_names('iniciais', 'finais', 'medio') ; na_list
+
+# Lista contendo numero de municipios sem dados, quanto esse numero representa
+# do total de municipios da regiao, populacao desses municipios sem dados e
+# quanto essa populacao representa do total da regiao
+map(
+  .x = na_list,
+  .f = ~ municipios_sp %>%
+    group_by(regiao_governo) %>% 
+    summarise(muns_regiao = n(), pop_regiao = sum(pop_ibge)) %>% 
+    left_join(.x %>% group_by(regiao_governo) %>% 
+                summarise(muns_na = n(), pop_na = sum(pop_ibge)),
+              by = 'regiao_governo') %>% 
+    mutate(muns_na = ifelse(is.na(muns_na), 0, muns_na),
+           pop_na = ifelse(is.na(pop_na), 0, pop_na),
+           na_ratio = muns_na / muns_regiao,
+           na_pop_ratio = pop_na / pop_regiao) %>% 
+    arrange(desc(na_ratio))
+)
+
+# Conclusão: missing data não parece ser um problema
+
 # CALCULANDO MÉDIAS REGIONAIS -------------------------------------------------
 df_reg <- df_mun %>% 
   group_by(regiao_governo, nivel) %>% 
@@ -124,7 +156,8 @@ dotplot_niveis <- ggplot(df_reg) +
     x = 'Média IDEB',
     y = 'Região de Governo',
     title = 'Desempenho das Regiões de Governo de SP por nível educacional',
-    subtitle = 'Médias do IDEB 2017 ponderadas por matrículas na rede pública em cada nível',
+    subtitle = 
+      'Médias do IDEB 2017 ponderadas por matrículas na rede pública em cada nível',
     caption = 'Fonte: Elaboração própria a partir de dados do INEP.'
   ) ; dotplot_niveis
 

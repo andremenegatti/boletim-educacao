@@ -165,3 +165,29 @@ df_regioes_pond %>%
 
 # ggsave("plots/scatterplot_ideb_vs_dsu_regioes.png",
 #        height = 6, width = 6)
+
+# SCATTERPLOT: IDEB VS DSU - Municípios ---------------------------------------
+# SMOOTH: loess
+df_iniciais %>% 
+  ggplot(aes(x = doc_sup, y = ideb)) +
+  geom_point(alpha = 0.2, shape = 1) +
+  geom_smooth(method = 'lm', col = 'darkred',
+              fill = 'lightgray', se = TRUE, alpha = 0.8) +
+  custom_theme() +
+  scale_x_continuous(labels = function(x) paste0(x, '%')) +
+  scale_y_continuous(labels = 
+                       function(x) formatC(x, big.mark = '.',
+                                           decimal.mark = ',')) +
+  labs(
+    x = 'Percentual de docentes com curso superior',
+    y = 'Nota IDEB 2017 - Anos Iniciais',
+    title = 'Relação entre formação dos docentes e desempenho educacional',
+    subtitle = 
+      'Municípios paulistas, IDEB 2017 Anos Iniciais',
+    caption = 'Notas:
+    i) Elaboração própria a partir de dados do INEP e do IBGE;
+    iii) A área sombreada corresponde ao intervalo de confiança de 95%.') +
+  theme(panel.grid = element_blank())
+
+# ggsave("plots/scatterplot_ideb_vs_dsu_municipios.png",
+#        height = 6, width = 6)
